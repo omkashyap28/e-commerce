@@ -1,6 +1,10 @@
 package com.omkashyap.com.backend.entity;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+
+import java.time.LocalDateTime;
 
 @Entity
 public class ShopAddress {
@@ -29,5 +33,12 @@ public class ShopAddress {
   @Column(nullable = false, length = 100)
   private String country;
 
-  private Boolean isDefault = true;
+  @Column(
+      updatable = false
+  )
+  @CreationTimestamp
+  private LocalDateTime createdAt;
+
+  @UpdateTimestamp
+  private LocalDateTime updatedAt;
 }

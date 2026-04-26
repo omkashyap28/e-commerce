@@ -1,6 +1,10 @@
 package com.omkashyap.com.backend.entity;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+
+import java.time.LocalDateTime;
 
 @Entity
 public class SellerVerification {
@@ -26,4 +30,12 @@ public class SellerVerification {
   )
   private String panNo;
 
+  @Column(
+      updatable = false
+  )
+  @CreationTimestamp
+  private LocalDateTime createdAt;
+
+  @UpdateTimestamp
+  private LocalDateTime updatedAt;
 }
