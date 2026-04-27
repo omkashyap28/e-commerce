@@ -2,14 +2,33 @@ package com.omkashyap.com.backend.entity;
 
 import com.omkashyap.com.backend.type.GenderEnum;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Entity
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+@Table(
+    indexes = {
+        @Index(name = "idx_user_email", columnList = "email"),
+        @Index(name = "idx_user_contact", columnList = "contact")
+    },
+    uniqueConstraints = {
+        @UniqueConstraint(name = "uk_user_contact", columnNames = "contact"),
+        @UniqueConstraint(name = "uk_user_email", columnNames = "email")
+    }
+)
 public class User {
 
   @Id
@@ -55,9 +74,9 @@ public class User {
 
   @ManyToMany
   @JoinTable(
-    name = "user_roles",
-    joinColumns = @JoinColumn(name = "user_id"),
-    inverseJoinColumns = @JoinColumn(name = "role_id")
+      name = "user_roles",
+      joinColumns = @JoinColumn(name = "user_id"),
+      inverseJoinColumns = @JoinColumn(name = "role_id")
   )
   private List<Role> roles;
 

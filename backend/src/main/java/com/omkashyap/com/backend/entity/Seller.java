@@ -1,7 +1,12 @@
 package com.omkashyap.com.backend.entity;
 
+import ch.qos.logback.classic.net.SMTPAppender;
 import com.omkashyap.com.backend.type.ShopCategoryEnum;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -9,6 +14,20 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+@Table(
+    indexes = {
+        @Index(name = "idx_seller_userid", columnList = "user_id"),
+        @Index(name = "idx_seller_sellerid", columnList = "seller_id")
+    },
+    uniqueConstraints = {
+        @UniqueConstraint(name = "uk_seller_productuserid", columnNames = {"user_id", "seller_id"}),
+        @UniqueConstraint(name = "uk_seller_usedid", columnNames = "user_id")
+    }
+)
 public class Seller {
 
   @Id
@@ -16,18 +35,16 @@ public class Seller {
   private Long id;
 
   @OneToOne(
-      orphanRemoval = true,
-      cascade = CascadeType.REMOVE
+      fetch = FetchType.EAGER
   )
   @JoinColumn(
       name = "user_id",
-      foreignKey = @ForeignKey(name = "fk_user_id")
+      foreignKey = @ForeignKey(name = "fk_seller_userid")
   )
   private User user;
 
   @Column(
       nullable = false,
-      unique = true,
       updatable = false
   )
   private String sellerId;
@@ -61,31 +78,23 @@ public class Seller {
   private ShopCategoryEnum shopCategoryEnum;
 
   @OneToOne(
-      cascade = CascadeType.ALL
-  )
-  @JoinColumn(
-      name = "varification_id",
-      foreignKey = @ForeignKey(name = "fk_varification_id")
+      mappedBy = "seller",
+      cascade = CascadeType.ALL,
+      orphanRemoval = true
   )
   private SellerVerification sellerVerification;
 
   @OneToOne(
       cascade = CascadeType.ALL,
-      orphanRemoval = true
-  )
-  @JoinColumn(
-      name = "bank_id",
-      foreignKey = @ForeignKey(name = "fk_bank_id")
+      orphanRemoval = true,
+      mappedBy = "seller"
   )
   private SellerBank sellerBank;
 
   @OneToOne(
       cascade = CascadeType.ALL,
-      orphanRemoval = true
-  )
-  @JoinColumn(
-      name = "shop_address_id",
-      foreignKey = @ForeignKey(name = "fk_shop_address_id")
+      orphanRemoval = true,
+      mappedBy = "seller"
   )
   private ShopAddress shopAddress;
 

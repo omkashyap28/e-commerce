@@ -1,15 +1,27 @@
 package com.omkashyap.com.backend.entity;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 @Table(
     indexes = {
-        @Index(name = "idx_product_productid", columnList = "productId"),
-        @Index(name = "idx_product_seller", columnList = "seller_id")
-    }
+        @Index(name = "idx_product_productid", columnList = "product_id"),
+        @Index(name = "idx_product_sellerid", columnList = "seller_id")
+    },
+    uniqueConstraints = @UniqueConstraint(name = "uk_product_productid", columnNames = "product_id")
 )
 public class Product {
 
@@ -19,7 +31,6 @@ public class Product {
 
   @Column(
       nullable = false,
-      unique = true,
       length = 30
   )
   private String productId;
@@ -54,21 +65,28 @@ public class Product {
   private List<Review> review;
 
   @ManyToOne(
-      fetch = FetchType.LAZY
+      fetch = FetchType.EAGER
   )
   @JoinColumn(
       name = "seller_id",
-      nullable = false
+      nullable = false,
+      foreignKey = @ForeignKey(
+          name = "fk_product_sellerid"
+      )
   )
   private Seller seller;
 
-  private Boolean inStock;
+  private Integer quantity;
 
-  private Long totalReviews;
+  private Integer totalReviews;
 
-  private Double averageRating;
+  private Float averageRating;
 
-  @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
+  @OneToMany(
+      mappedBy = "product",
+      cascade = CascadeType.ALL,
+      orphanRemoval = true
+  )
   private List<ProductDiscussion> discussions;
 
   @OneToMany(
@@ -77,4 +95,11 @@ public class Product {
       orphanRemoval = true
   )
   private List<ProductAttribute> productAttribute;
+
+  @CreationTimestamp
+  private LocalDateTime createdAt;
+
+  @UpdateTimestamp
+  private LocalDateTime updatedAt;
+
 }

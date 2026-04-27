@@ -1,8 +1,16 @@
 package com.omkashyap.com.backend.entity;
 
 import jakarta.persistence.*;
+import lombok.*;
 
 @Entity
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+@Table(
+    indexes = @Index(name = "idx_address_user_id", columnList = "user_id")
+)
 public class Address {
 
   @Id
@@ -12,7 +20,10 @@ public class Address {
   @ManyToOne
   @JoinColumn(
       name = "user_id",
-      nullable = false
+      nullable = false,
+      foreignKey = @ForeignKey(
+          name = "fk_address_userid"
+      )
   )
   private User user;
 

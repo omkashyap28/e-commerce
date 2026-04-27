@@ -1,14 +1,25 @@
 package com.omkashyap.com.backend.entity;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 @Table(
     indexes = {
         @Index(
-            name = "idx_review_reviewid", columnList = "review_id"
+            name = "idx_review_image_reviewid", columnList = "review_id"
         )
-    }
+    },
+    uniqueConstraints = @UniqueConstraint(
+        name = "uk_review_imageurl", columnNames = "image_url"
+    )
 )
 public class ReviewImage {
 
@@ -16,13 +27,16 @@ public class ReviewImage {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
-  @ManyToOne
+  @ManyToOne(
+      fetch = FetchType.EAGER
+  )
   @JoinColumn(
       name = "review_id",
       nullable = false,
       foreignKey = @ForeignKey(
-          name = "fk_review_reviewid"
+          name = "fk_review_image_reviewid"
       )
+
   )
   private Review review;
 

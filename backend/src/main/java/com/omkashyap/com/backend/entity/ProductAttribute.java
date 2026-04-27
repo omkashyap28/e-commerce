@@ -13,13 +13,12 @@ import lombok.Setter;
 @NoArgsConstructor
 @Table(
     indexes = {
-        @Index(name = "idx_product_attribute_productid", columnList = "product_id"),
-        @Index(name = "idx_attr_name_value", columnList = "attributeName, attributeValue")
+        @Index(name = "idx_product_attribute_productid", columnList = "product_id")
     },
     uniqueConstraints = {
         @UniqueConstraint(
             name = "uk_product_attribute_name",
-            columnNames = {"product_id", "attributeName"}
+            columnNames = {"product_id"}
         )
     }
 )
@@ -30,11 +29,14 @@ public class ProductAttribute {
   private Long id;
 
   @ManyToOne(
-      fetch = FetchType.LAZY
+      fetch = FetchType.EAGER
   )
   @JoinColumn(
       name = "product_id",
-      nullable = false
+      nullable = false,
+      foreignKey = @ForeignKey(
+          name = "fk_product_attribute_productid"
+      )
   )
   private Product product;
 
