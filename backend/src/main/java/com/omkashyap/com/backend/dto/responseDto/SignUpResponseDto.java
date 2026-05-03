@@ -10,7 +10,7 @@ import lombok.*;
 @Builder
 public class SignUpResponseDto {
 
-  private String publicId;
+  private String userId;
 
   private String email;
 
