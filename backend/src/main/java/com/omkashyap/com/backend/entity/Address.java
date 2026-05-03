@@ -17,7 +17,9 @@ public class Address {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
-  @ManyToOne
+  @ManyToOne(
+      fetch = FetchType.EAGER
+  )
   @JoinColumn(
       name = "user_id",
       nullable = false,
@@ -26,6 +28,12 @@ public class Address {
       )
   )
   private User user;
+
+  @Column(nullable = false, unique = true)
+  private String addressId;
+
+  @Column(nullable = false, length = 150)
+  private String address;
 
   @Column(nullable = false, length = 100)
   private String street;
@@ -42,5 +50,13 @@ public class Address {
   @Column(nullable = false, length = 100)
   private String country;
 
-  private Boolean isDefault = true;
+  private Boolean isDefault;
+
+  @PrePersist
+  void generateAddressId() {
+    if (this.addressId == null) {
+      this.addressId = "add-" + java.util.UUID.randomUUID().toString().substring(0, 8);
+    }
+
+  }
 }
