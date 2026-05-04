@@ -1,24 +1,28 @@
 package com.omkashyap.com.backend.entity;
 
+import com.omkashyap.com.backend.type.LoginProviderType;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
+
+import java.util.UUID;
 
 @Entity
 @Getter
 @Setter
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @Table(
     indexes = {
         @Index(name = "idx_session_userid", columnList = "user_id")
     },
-    uniqueConstraints = @UniqueConstraint(name = "uk_session_sessiontoken", columnNames = "session_token")
+    uniqueConstraints = {
+        @UniqueConstraint(name = "uk_session_refreshtoken", columnNames = "refresh_token"),
+        @UniqueConstraint(name = "uk_session_sessionid", columnNames = "session_id")
+    }
 )
 public class Session {
 
@@ -26,7 +30,9 @@ public class Session {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
-  @ManyToOne
+  @ManyToOne(
+      fetch = FetchType.LAZY
+  )
   @JoinColumn(
       name = "user_id",
       nullable = false,
@@ -37,18 +43,37 @@ public class Session {
   private User user;
 
   @Column(
+      nullable = false,
+      updatable = false
+  )
+  private String sessionId;
+
+  @Column(
       nullable = false
   )
-  private String sessionToken;
+  private String accessToken;
 
-  private String device;
+
+  private LocalDateTime expiresAt;
+
+  private String userAgent;
 
   private String ipAddress;
 
-  private LocalDate expiresAt;
+  @Enumerated(EnumType.STRING)
+  private LoginProviderType provider;
 
   @CreationTimestamp
-  private LocalDate createdAt;
+  private LocalDateTime createdAt;
 
-  private Boolean isActive = true;
+
+  private Boolean active;
+
+  @PrePersist
+  public void initializePublicId() {
+    if (this.sessionId == null) {
+      this.sessionId = UUID.randomUUID().toString();
+    }
+  }
+
 }
