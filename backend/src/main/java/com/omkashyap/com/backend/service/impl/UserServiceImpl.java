@@ -1,9 +1,12 @@
 package com.omkashyap.com.backend.service.impl;
 
+import com.omkashyap.com.backend.dto.requestDto.UserAddressRequestDto;
+import com.omkashyap.com.backend.dto.responseDto.AllAddressResponseDto;
 import com.omkashyap.com.backend.dto.responseDto.UserAddressResponseDto;
 import com.omkashyap.com.backend.dto.responseDto.UserResponseDto;
 import com.omkashyap.com.backend.entity.Address;
 import com.omkashyap.com.backend.entity.User;
+import com.omkashyap.com.backend.repository.AddressRepository;
 import com.omkashyap.com.backend.repository.UserRepository;
 import com.omkashyap.com.backend.service.UserService;
 import jakarta.transaction.Transactional;
@@ -15,7 +18,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
-import java.lang.Boolean;
 
 @Service
 @RequiredArgsConstructor
@@ -24,6 +26,7 @@ public class UserServiceImpl implements UserService {
   private final UserRepository userRepository;
   private final ModelMapper modelMapper;
   private final PasswordEncoder passwordEncoder;
+  private final AddressRepository addressRepository;
 
   @Override
   public UserResponseDto getUserById(String userId) {
@@ -59,7 +62,7 @@ public class UserServiceImpl implements UserService {
           user.setContact((String) value);
           break;
         case "avatarUrl":
-          user.setAvatarUrl((String) value);
+          user.setAvatarId((String) value);
           break;
         case "password":
           user.setPassword(passwordEncoder.encode((String) value));
@@ -80,5 +83,45 @@ public class UserServiceImpl implements UserService {
   public void deleteUserById(String userId) {
     User user = userRepository.findByUserId(userId).orElseThrow(() -> new IllegalArgumentException("User not exists"));
     userRepository.delete(user);
+  }
+
+  @Override
+  @Transactional
+  public UserResponseDto addAddressToUser(String userId, UserAddressRequestDto addressRequestDto) {
+    User user = userRepository.findByUserId(userId).orElseThrow(() -> new IllegalArgumentException("User not exsits"));
+
+    Address address = new Address();
+    address.setAddress(addressRequestDto.getAddress());
+    address.setStreet(addressRequestDto.getStreet());
+    address.setCity(addressRequestDto.getCity());
+    address.setState(addressRequestDto.getState());
+    address.setCountry(addressRequestDto.getCountry());
+    address.setPostalCode(addressRequestDto.getPostalCode());
+
+    address.setUser(user);
+
+    user.getAddresses().add(address);
+    userRepository.save(user);
+
+    UserResponseDto userResponseDto = modelMapper.map(user, UserResponseDto.class);
+
+    userResponseDto.setUserId(user.getUserId());
+
+    userResponseDto.setAddresses(
+        user.getAddresses().stream()
+            .map(add -> modelMapper.map(add, UserAddressResponseDto.class))
+            .toList()
+    );
+
+    return userResponseDto;
+  }
+
+  @Override
+  public List<AllAddressResponseDto> getAllAddressByUserId(String userId) {
+    List<Address> addresses = addressRepository.findByUser_UserId(userId);
+
+    return addresses.stream()
+        .map(add -> modelMapper.map(add, AllAddressResponseDto.class))
+        .toList();
   }
 }
