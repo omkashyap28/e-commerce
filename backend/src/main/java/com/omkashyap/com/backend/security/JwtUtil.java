@@ -24,9 +24,9 @@ public class JwtUtil {
     return Keys.hmacShaKeyFor(keyBytes);
   }
 
-  public String generateAccessToken(User user) {
+  public String generateAccessToken(String subject) {
     return Jwts.builder()
-        .subject(user.getEmail())
+        .subject(subject)
         .issuedAt(new Date(System.currentTimeMillis()))
         .expiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
         .signWith(getSecretKey())

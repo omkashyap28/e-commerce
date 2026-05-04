@@ -12,6 +12,7 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
@@ -19,6 +20,8 @@ import org.springframework.security.web.SecurityFilterChain;
 public class SecurityConfiguration {
 
   private final CustomUserDetailService customUserDetailService;
+  private final JwtFilterChain jwtFilterChain;
+
 
   @Bean
   public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) {
@@ -43,6 +46,7 @@ public class SecurityConfiguration {
         .formLogin(AbstractHttpConfigurer::disable)
         .httpBasic(AbstractHttpConfigurer::disable)
         .csrf(AbstractHttpConfigurer::disable)
+        .addFilterBefore(jwtFilterChain, UsernamePasswordAuthenticationFilter.class)
         .build();
   }
 }
