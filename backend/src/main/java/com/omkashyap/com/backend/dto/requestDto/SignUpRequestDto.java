@@ -1,6 +1,7 @@
 package com.omkashyap.com.backend.dto.requestDto;
 
 import com.omkashyap.com.backend.type.GenderEnum;
+import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.*;
 import lombok.Data;
 
@@ -13,7 +14,6 @@ public class SignUpRequestDto {
   @Size(min = 3, max = 50, message = "First name should be less than 50 character")
   private String firstName;
 
-  @NotBlank(message = "Last name is required")
   @Size(min = 3, max = 50, message = "Last name should be less than 50 character")
   private String lastName;
 
@@ -22,7 +22,6 @@ public class SignUpRequestDto {
   @Size(min = 5, max = 100, message = "Email should be less than 100 character")
   private String email;
 
-  @NotBlank(message = "Password is required")
   @Size(min = 10, max = 50, message = "Password must be at least 6 characters")
   private String password;
 
@@ -31,8 +30,6 @@ public class SignUpRequestDto {
   private String contact;
 
   private GenderEnum gender;
-
-  @Past(message = "Date of birth must be in the past")
   private LocalDate dateOfBirth;
 
   private String avatarUrl;

@@ -7,11 +7,14 @@ import com.omkashyap.com.backend.dto.responseDto.SignUpResponseDto;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
+import org.aspectj.weaver.ResolvedPointcutDefinition;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 
 import java.net.URI;
 
-@Service
+//@Service
 public interface AuthService {
 
   LoginResponseDto login(LoginRequestDto loginRequestDto);
@@ -19,4 +22,5 @@ public interface AuthService {
   SignUpResponseDto signup(SignUpRequestDto signUpRequestDto);
 
   void logout(String token);
+
 }

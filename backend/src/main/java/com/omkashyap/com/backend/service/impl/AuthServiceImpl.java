@@ -4,13 +4,17 @@ import com.omkashyap.com.backend.dto.requestDto.LoginRequestDto;
 import com.omkashyap.com.backend.dto.requestDto.SignUpRequestDto;
 import com.omkashyap.com.backend.dto.responseDto.LoginResponseDto;
 import com.omkashyap.com.backend.dto.responseDto.SignUpResponseDto;
+import com.omkashyap.com.backend.entity.Role;
 import com.omkashyap.com.backend.entity.Session;
 import com.omkashyap.com.backend.entity.User;
+import com.omkashyap.com.backend.repository.RoleRepository;
 import com.omkashyap.com.backend.repository.SessionRepository;
 import com.omkashyap.com.backend.repository.UserRepository;
 import com.omkashyap.com.backend.security.JwtUtil;
 import com.omkashyap.com.backend.service.AuthService;
 import com.omkashyap.com.backend.service.SessionService;
+import com.omkashyap.com.backend.type.LoginProviderType;
+import com.omkashyap.com.backend.type.RoleEnum;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -18,10 +22,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
 
 @Service
 @RequiredArgsConstructor
@@ -33,6 +39,7 @@ public class AuthServiceImpl implements AuthService {
   private final PasswordEncoder passwordEncoder;
   private final SessionRepository sessionRepository;
   private final SessionService sessionService;
+  private final RoleRepository roleRepository;
   private String token;
   @Autowired
   private HttpServletRequest httpServletRequest;
@@ -47,14 +54,16 @@ public class AuthServiceImpl implements AuthService {
 
     User user = (User) authentication.getPrincipal();
 
+
     if (user != null) {
       if (authentication.isAuthenticated()) {
-        token = jwtUtil.generateAccessToken(user);
+        token = jwtUtil.generateAccessToken(user.getEmail());
       }
+      userRepository.save(user);
       String userAgent = httpServletRequest.getHeader("User-Agent");
       String ipAddress = getClientIp(httpServletRequest);
-      sessionService.createSession(user, token, LocalDateTime.now().plusDays(1), userAgent, ipAddress);
-      return new LoginResponseDto(token, user.getUserId());
+      sessionService.createSession(user, token, LocalDateTime.now().plusDays(1), userAgent, ipAddress, LoginProviderType.EMAIL);
+      return new LoginResponseDto(token);
     }
 
     throw new RuntimeException("Invalid credentials");
@@ -70,6 +79,8 @@ public class AuthServiceImpl implements AuthService {
       throw new RuntimeException("Contact already exists");
     }
 
+    Role role = roleRepository.findByRole(RoleEnum.ROLE_USER).orElseThrow(() -> new RuntimeException("Role not found"));
+
     User user = User.builder()
         .firstName(request.getFirstName())
         .lastName(request.getLastName())
@@ -79,7 +90,14 @@ public class AuthServiceImpl implements AuthService {
         .dateOfBirth(request.getDateOfBirth())
         .password(passwordEncoder.encode(request.getPassword()))
         .avatarUrl(request.getAvatarUrl())
+        .providerType(LoginProviderType.EMAIL)
         .build();
+
+    if (user.getRoles() == null) {
+      user.setRoles(new HashSet<>());
+    }
+    user.getRoles().add(role);
+
     userRepository.save(user);
 
     return SignUpResponseDto.builder()
@@ -89,13 +107,13 @@ public class AuthServiceImpl implements AuthService {
         .build();
   }
 
+  @Transactional
   public void logout(String token) {
-    Session session = sessionRepository.findByAccessToken(token)
-        .orElseThrow(() -> new RuntimeException("Session not found"));
-
-    session.setActive(false);
-    sessionRepository.save(session);
+    sessionRepository.deleteByAccessToken(token);
+    SecurityContextHolder.clearContext();
   }
+
+//  Seller login
 
 
 //  Helper method
