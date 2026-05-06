@@ -1,10 +1,7 @@
 package com.omkashyap.com.backend.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -15,6 +12,7 @@ import java.time.LocalDateTime;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 @Table(
     indexes = @Index(name = "idx_shop_address_sellerid", columnList = "seller_id")
 )
@@ -32,6 +30,11 @@ public class ShopAddress {
       foreignKey = @ForeignKey(name = "fk_address_sellerid")
   )
   private Seller seller;
+
+  @Column(
+      nullable = false
+  )
+  private String address;
 
   @Column(nullable = false, length = 100)
   private String street;

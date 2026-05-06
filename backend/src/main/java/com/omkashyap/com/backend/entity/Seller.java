@@ -1,31 +1,28 @@
 package com.omkashyap.com.backend.entity;
 
-import ch.qos.logback.classic.net.SMTPAppender;
 import com.omkashyap.com.backend.type.ShopCategoryEnum;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 
 @Entity
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 @Table(
     indexes = {
         @Index(name = "idx_seller_userid", columnList = "user_id"),
         @Index(name = "idx_seller_sellerid", columnList = "seller_id")
     },
     uniqueConstraints = {
-        @UniqueConstraint(name = "uk_seller_productuserid", columnNames = {"user_id", "seller_id"}),
-        @UniqueConstraint(name = "uk_seller_usedid", columnNames = "user_id")
+        @UniqueConstraint(name = "uk_seller_sellerid", columnNames = "seller_id")
     }
 )
 public class Seller {
@@ -34,18 +31,10 @@ public class Seller {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
-  @OneToOne(
-      fetch = FetchType.EAGER
-  )
-  @JoinColumn(
-      name = "user_id",
-      foreignKey = @ForeignKey(name = "fk_seller_userid")
-  )
-  private User user;
-
   @Column(
       nullable = false,
-      updatable = false
+      updatable = false,
+      length = 32
   )
   private String sellerId;
 
@@ -60,13 +49,6 @@ public class Seller {
   )
   private String description;
 
-  @OneToMany(
-      orphanRemoval = true,
-      mappedBy = "seller",
-      cascade = CascadeType.ALL
-  )
-  private List<Product> products;
-
   private Float averageRating;
 
   private Integer ratingCount;
@@ -76,6 +58,22 @@ public class Seller {
       nullable = false
   )
   private ShopCategoryEnum shopCategoryEnum;
+
+  @OneToOne(
+      fetch = FetchType.LAZY
+  )
+  @JoinColumn(
+      name = "user_id",
+      nullable = false
+  )
+  private User user;
+
+  @OneToMany(
+      orphanRemoval = true,
+      mappedBy = "seller",
+      cascade = CascadeType.ALL
+  )
+  private List<Product> products;
 
   @OneToOne(
       mappedBy = "seller",
@@ -103,4 +101,11 @@ public class Seller {
 
   @UpdateTimestamp
   private LocalDateTime updatedAt;
+
+  @PrePersist
+  private void createSellerId() {
+    if (this.sellerId == null) {
+      this.sellerId = UUID.randomUUID().toString().replace("-", "");
+    }
+  }
 }
