@@ -1,14 +1,12 @@
 package com.omkashyap.com.backend.dto.requestDto;
 
-import com.omkashyap.com.backend.dto.responseDto.UserAddressResponseDto;
-import jakarta.persistence.Column;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
-public class UserAddressRequestDto {
+public class AddressRequestDto {
 
   @NotBlank(message = "Address is required")
   private String address;

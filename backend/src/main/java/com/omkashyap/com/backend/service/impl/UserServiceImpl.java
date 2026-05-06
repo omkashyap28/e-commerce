@@ -1,6 +1,6 @@
 package com.omkashyap.com.backend.service.impl;
 
-import com.omkashyap.com.backend.dto.requestDto.UserAddressRequestDto;
+import com.omkashyap.com.backend.dto.requestDto.AddressRequestDto;
 import com.omkashyap.com.backend.dto.responseDto.AllAddressResponseDto;
 import com.omkashyap.com.backend.dto.responseDto.UserAddressResponseDto;
 import com.omkashyap.com.backend.dto.responseDto.UserResponseDto;
@@ -44,6 +44,7 @@ public class UserServiceImpl implements UserService {
   }
 
   @Override
+  @Transactional
   public UserResponseDto updatePartialUserDetails(String userId, Map<String, Object> updates) {
     User user = userRepository.findByUserId(userId).orElseThrow(() -> new IllegalArgumentException("User not exits with this userid"));
 
@@ -62,7 +63,7 @@ public class UserServiceImpl implements UserService {
           user.setContact((String) value);
           break;
         case "avatarUrl":
-          user.setAvatarId((String) value);
+          user.setAvatarUrl((String) value);
           break;
         case "password":
           user.setPassword(passwordEncoder.encode((String) value));
@@ -87,7 +88,7 @@ public class UserServiceImpl implements UserService {
 
   @Override
   @Transactional
-  public UserResponseDto addAddressToUser(String userId, UserAddressRequestDto addressRequestDto) {
+  public UserResponseDto addAddressToUser(String userId, AddressRequestDto addressRequestDto) {
     User user = userRepository.findByUserId(userId).orElseThrow(() -> new IllegalArgumentException("User not exsits"));
 
     Address address = new Address();

@@ -1,8 +1,7 @@
 package com.omkashyap.com.backend.service;
 
-import com.omkashyap.com.backend.dto.requestDto.UserAddressRequestDto;
+import com.omkashyap.com.backend.dto.requestDto.AddressRequestDto;
 import com.omkashyap.com.backend.dto.responseDto.AllAddressResponseDto;
-import com.omkashyap.com.backend.dto.responseDto.UserAddressResponseDto;
 import com.omkashyap.com.backend.dto.responseDto.UserResponseDto;
 
 import java.util.List;
@@ -15,7 +14,7 @@ public interface UserService {
 
   void deleteUserById(String userId);
 
-  UserResponseDto addAddressToUser(String userId, UserAddressRequestDto addressRequestDto);
+  UserResponseDto addAddressToUser(String userId, AddressRequestDto addressRequestDto);
 
   List<AllAddressResponseDto> getAllAddressByUserId(String userId);
 }
