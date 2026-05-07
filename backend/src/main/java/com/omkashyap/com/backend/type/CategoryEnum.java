@@ -1,6 +1,6 @@
 package com.omkashyap.com.backend.type;
 
-public enum ShopCategoryEnum {
+public enum CategoryEnum {
   ELECTRONICS,
   FASHION,
   GROCERY,
