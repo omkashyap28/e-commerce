@@ -1,6 +1,7 @@
 package com.omkashyap.com.backend.entity;
 
-import com.omkashyap.com.backend.type.ShopCategoryEnum;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.omkashyap.com.backend.type.CategoryEnum;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -57,8 +58,9 @@ public class Seller {
   @Column(
       nullable = false
   )
-  private ShopCategoryEnum shopCategoryEnum;
+  private CategoryEnum category;
 
+  @JsonIgnore
   @OneToOne(
       fetch = FetchType.LAZY
   )
@@ -68,6 +70,7 @@ public class Seller {
   )
   private User user;
 
+  @JsonIgnore
   @OneToMany(
       orphanRemoval = true,
       mappedBy = "seller",
@@ -75,6 +78,7 @@ public class Seller {
   )
   private List<Product> products;
 
+  @JsonIgnore
   @OneToOne(
       mappedBy = "seller",
       cascade = CascadeType.ALL,
@@ -89,12 +93,15 @@ public class Seller {
   )
   private SellerBank sellerBank;
 
+  @JsonIgnore
   @OneToOne(
       cascade = CascadeType.ALL,
       orphanRemoval = true,
       mappedBy = "seller"
   )
   private ShopAddress shopAddress;
+
+  private Boolean isVerified;
 
   @CreationTimestamp
   private LocalDateTime createdAt;
