@@ -1,10 +1,13 @@
 package com.omkashyap.com.backend.controller;
 
 import com.omkashyap.com.backend.dto.requestDto.AddressRequestDto;
+import com.omkashyap.com.backend.dto.requestDto.ProductRequestDto;
 import com.omkashyap.com.backend.dto.requestDto.SellerAccountRequestDto;
 import com.omkashyap.com.backend.dto.requestDto.SellerVerificationRequestDto;
+import com.omkashyap.com.backend.dto.responseDto.ProductResponseDto;
 import com.omkashyap.com.backend.dto.responseDto.SellerResponseDto;
 import com.omkashyap.com.backend.dto.responseDto.ShopAddressResponseDto;
+import com.omkashyap.com.backend.service.ProductService;
 import com.omkashyap.com.backend.service.SellerService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -12,6 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -20,6 +24,7 @@ import java.util.Map;
 public class SellerController {
 
   private final SellerService sellerService;
+  private final ProductService productService;
 
   @GetMapping("/{sellerId}")
   ResponseEntity<SellerResponseDto> getSellerBySellerId(@PathVariable("sellerId") String sellerId) {
@@ -57,4 +62,29 @@ public class SellerController {
     return ResponseEntity.noContent().build();
   }
 
+  @PostMapping("/{sellerId}/product")
+  ResponseEntity<ProductResponseDto> createProduct(@PathVariable String sellerId, @Valid @RequestBody ProductRequestDto productRequestDto) {
+    return ResponseEntity.status(HttpStatus.CREATED).body(productService.addNewProduct(sellerId, productRequestDto));
+  }
+
+  @GetMapping("/{sellerId}/product")
+  ResponseEntity<ProductResponseDto> getProduct(@PathVariable String sellerId, @RequestParam String productId) {
+    return ResponseEntity.status(HttpStatus.CREATED).body(productService.getProductBySellerAndProductId(sellerId, productId));
+  }
+
+  @PatchMapping("/{sellerId}/product")
+  ResponseEntity<ProductResponseDto> updatePartialProductById(@PathVariable String sellerId, @RequestParam String productId, @RequestBody Map<String, Object> values) {
+    return ResponseEntity.status(HttpStatus.OK).body(productService.patchProductById(sellerId, productId, values));
+  }
+
+  @GetMapping("/{sellerId}/all-products")
+  ResponseEntity<List<ProductResponseDto>> getAllProduct(@PathVariable String sellerId) {
+    return ResponseEntity.status(HttpStatus.OK).body(productService.getAllProducts(sellerId));
+  }
+
+  @DeleteMapping("/{sellerId}/product")
+  ResponseEntity<Void> deleteProduct(@PathVariable String sellerId, @RequestParam String productId) {
+    productService.deleteProductBySellerId(sellerId, productId);
+    return ResponseEntity.noContent().build();
+  }
 }

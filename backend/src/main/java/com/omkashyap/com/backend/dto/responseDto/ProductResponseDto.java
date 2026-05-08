@@ -1,0 +1,24 @@
+package com.omkashyap.com.backend.dto.responseDto;
+
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.util.ArrayList;
+import java.util.List;
+
+@Data
+@NoArgsConstructor
+public class ProductResponseDto {
+
+  private String productId;
+  private String description;
+  private List<ProductImageResponseDto> productImages = new ArrayList<>();
+  private List<ProductAttributeResponseDto> productAttributes = new ArrayList<>();
+  private String sellerId;
+  private Boolean inStock;
+  private Integer totalReviews;
+  private Float averageRating;
+  private Long categoryId;
+  private Float price;
+
+}
