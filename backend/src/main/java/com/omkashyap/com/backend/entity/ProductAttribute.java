@@ -1,25 +1,20 @@
 package com.omkashyap.com.backend.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
 @Setter
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @Table(
     indexes = {
         @Index(name = "idx_product_attribute_productid", columnList = "product_id")
-    },
-    uniqueConstraints = {
-        @UniqueConstraint(
-            name = "uk_product_attribute_name",
-            columnNames = {"product_id"}
-        )
     }
 )
 public class ProductAttribute {
@@ -51,4 +46,23 @@ public class ProductAttribute {
       length = 255
   )
   private String attributeValue;
+
+  @OneToMany(
+      mappedBy = "productAttribute",
+      cascade = CascadeType.ALL,
+      orphanRemoval = false
+  )
+  private List<OrderItem> items = new ArrayList<>();
+
+  @OneToMany(
+      mappedBy = "productAttribute",
+      cascade = CascadeType.ALL,
+      orphanRemoval = false
+  )
+  private List<CartItem> cart = new ArrayList<>();
+
+  public ProductAttribute(String attributeName, String attributeValue) {
+    this.attributeName = attributeName;
+    this.attributeValue = attributeValue;
+  }
 }

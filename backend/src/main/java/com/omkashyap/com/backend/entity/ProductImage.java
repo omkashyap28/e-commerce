@@ -1,18 +1,14 @@
 package com.omkashyap.com.backend.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-
-import javax.swing.*;
+import lombok.*;
 
 @Entity
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 @Table(
     uniqueConstraints = @UniqueConstraint(
         name = "uk_product_image_producturl", columnNames = "product_url"
@@ -36,6 +32,6 @@ public class ProductImage {
   @Column(
       nullable = false
   )
-  private String productUrl;
+  private String imageUrl;
 
 }
