@@ -23,9 +23,9 @@ public class SellerResponseDto {
 
   private Integer ratingCount;
 
-  private CategoryEnum shopCategoryEnum;
+  private CategoryEnum category;
 
-  private List<Product> products;
+  private List<ProductResponseDto> products;
 
   private ShopAddressResponseDto shopAddress;
 

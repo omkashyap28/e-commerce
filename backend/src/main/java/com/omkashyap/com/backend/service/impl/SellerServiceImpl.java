@@ -73,6 +73,8 @@ public class SellerServiceImpl implements SellerService {
         .shopName(requestDto.getShopName())
         .description(requestDto.getDescription())
         .category(requestDto.getCategory())
+        .averageRating(0.0F)
+        .ratingCount(0)
         .isVerified(false)
         .build();
 
@@ -81,15 +83,9 @@ public class SellerServiceImpl implements SellerService {
     }
     user.getRoles().add(role);
 
-    user.setSeller(seller);
+    Seller savedSeller = sellerRepository.save(seller);
 
-    userRepository.save(user);
-
-    SellerResponseDto response = modelMapper.map(seller, SellerResponseDto.class);
-
-    sellerRepository.save(seller);
-
-    return response;
+    return modelMapper.map(savedSeller, SellerResponseDto.class);
   }
 
   @Override

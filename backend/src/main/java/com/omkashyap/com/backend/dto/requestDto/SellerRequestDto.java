@@ -1,8 +1,8 @@
 package com.omkashyap.com.backend.dto.requestDto;
 
 import com.omkashyap.com.backend.type.CategoryEnum;
-import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 
@@ -17,10 +17,10 @@ public class SellerRequestDto {
   @Size(min = 5, max = 100)
   private String shopName;
 
-  @Max(200)
+  @Size(max = 200)
   private String description;
 
-  @NotBlank(message = "Shop category is required")
+  @NotNull(message = "Shop category is required")
   private CategoryEnum category;
 
 
