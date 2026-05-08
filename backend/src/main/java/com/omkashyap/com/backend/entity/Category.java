@@ -1,15 +1,17 @@
 package com.omkashyap.com.backend.entity;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 @Getter
+@Setter
+@AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class Category {
 
   @Id
