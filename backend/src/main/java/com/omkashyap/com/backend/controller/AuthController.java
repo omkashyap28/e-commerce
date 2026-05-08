@@ -39,7 +39,7 @@ public class AuthController {
 
 
   @PostMapping("/seller/register")
-  ResponseEntity<SellerResponseDto> registerSeller(@RequestBody SellerRequestDto requestDto) {
+  ResponseEntity<SellerResponseDto> registerSeller(@Valid @RequestBody SellerRequestDto requestDto) {
     return ResponseEntity.status(HttpStatus.CREATED).body(sellerService.registerSeller(requestDto));
   }
 
