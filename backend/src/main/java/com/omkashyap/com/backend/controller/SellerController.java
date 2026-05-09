@@ -5,9 +5,11 @@ import com.omkashyap.com.backend.dto.requestDto.ProductRequestDto;
 import com.omkashyap.com.backend.dto.requestDto.SellerAccountRequestDto;
 import com.omkashyap.com.backend.dto.requestDto.SellerVerificationRequestDto;
 import com.omkashyap.com.backend.dto.responseDto.ProductResponseDto;
+import com.omkashyap.com.backend.dto.responseDto.ReviewResponseDto;
 import com.omkashyap.com.backend.dto.responseDto.SellerResponseDto;
 import com.omkashyap.com.backend.dto.responseDto.ShopAddressResponseDto;
 import com.omkashyap.com.backend.service.ProductService;
+import com.omkashyap.com.backend.service.ReviewService;
 import com.omkashyap.com.backend.service.SellerService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +27,7 @@ public class SellerController {
 
   private final SellerService sellerService;
   private final ProductService productService;
+  private final ReviewService reviewService;
 
   @GetMapping("/{sellerId}")
   ResponseEntity<SellerResponseDto> getSellerBySellerId(@PathVariable("sellerId") String sellerId) {
@@ -87,4 +90,10 @@ public class SellerController {
     productService.deleteProductBySellerId(sellerId, productId);
     return ResponseEntity.noContent().build();
   }
+
+  @GetMapping("/{sellerId}/products/{productId}/reviews")
+  ResponseEntity<List<ReviewResponseDto>> getAllReviewsBySellerId(@PathVariable String productId) {
+    return ResponseEntity.status(HttpStatus.OK).body(reviewService.getAllProductReviewsByProductId(productId));
+  }
+
 }

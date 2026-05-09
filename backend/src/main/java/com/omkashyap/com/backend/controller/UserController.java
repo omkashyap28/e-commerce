@@ -2,8 +2,10 @@ package com.omkashyap.com.backend.controller;
 
 import com.omkashyap.com.backend.dto.requestDto.AddressRequestDto;
 import com.omkashyap.com.backend.dto.responseDto.AllAddressResponseDto;
+import com.omkashyap.com.backend.dto.responseDto.ReviewResponseDto;
 import com.omkashyap.com.backend.dto.responseDto.UserResponseDto;
 import com.omkashyap.com.backend.service.AddressService;
+import com.omkashyap.com.backend.service.ReviewService;
 import com.omkashyap.com.backend.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -20,6 +22,7 @@ import java.util.Map;
 public class UserController {
 
   private final UserService userService;
+  private final ReviewService reviewService;
 
   @GetMapping("/{userId}")
   ResponseEntity<UserResponseDto> getUserById(@PathVariable("userId") String userId) {
@@ -45,5 +48,10 @@ public class UserController {
   @GetMapping("/{userId}/address")
   ResponseEntity<List<AllAddressResponseDto>> getAddressByUserId(@PathVariable String userId) {
     return ResponseEntity.status(HttpStatus.OK).body(userService.getAllAddressByUserId(userId));
+  }
+
+  @GetMapping("/{userId}/all-reviews")
+  ResponseEntity<List<ReviewResponseDto>> getAllReviewByUserId(@PathVariable String userId) {
+    return ResponseEntity.status(HttpStatus.OK).body(reviewService.getAllReviewsByUserId(userId));
   }
 }

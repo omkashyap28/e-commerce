@@ -130,6 +130,14 @@ public class User implements UserDetails {
   )
   private List<Cart> cart = new ArrayList<>();
 
+  @JsonIgnore
+  @OneToMany(
+      mappedBy = "user",
+      orphanRemoval = true,
+      cascade = CascadeType.ALL
+  )
+  private List<Review> reviews = new ArrayList<>();
+
   @OneToOne(
       cascade = CascadeType.ALL,
       orphanRemoval = true,
