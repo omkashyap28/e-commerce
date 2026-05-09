@@ -1,24 +1,24 @@
 package com.omkashyap.com.backend.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import javax.swing.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Entity
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 @Table(
     indexes = {
-        @Index(name = "idx_review_productid", columnList = "product_id"),
         @Index(name = "idx_review_userid", columnList = "user_id"),
     },
     uniqueConstraints = {
@@ -35,6 +35,12 @@ public class Review {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
+
+  @Column(
+      nullable = false,
+      length = 32
+  )
+  private String reviewId;
 
   @ManyToOne(
       fetch = FetchType.EAGER
@@ -60,39 +66,35 @@ public class Review {
   )
   private User user;
 
-  @OneToOne(
-      fetch = FetchType.EAGER
+  @Column(
+      nullable = false
   )
-  @JoinColumn(
-      name = "rating_id",
-      foreignKey = @ForeignKey(
-          name = "fk_review_productrating"
-      )
-  )
-  private ProductRating rating;
+  private Double rating;
 
-  @OneToOne(
-      mappedBy = "review",
-      orphanRemoval = true,
-      cascade = CascadeType.ALL
+  @Column(
+      nullable = false,
+      length = 200
   )
-  private ReviewContent reviewContent;
+  private String message;
 
   @OneToMany(
       mappedBy = "review",
       orphanRemoval = true,
       cascade = CascadeType.ALL
   )
-  private List<ReviewImage> reviewImage;
+  private List<ReviewImage> reviewImages = new ArrayList<>();
 
   @CreationTimestamp
-  @Column(
-      updatable = false,
-      insertable = false
-  )
   private LocalDateTime createdAt;
 
   @UpdateTimestamp
   private LocalDateTime updatedAt;
+
+  @PrePersist
+  void generateId() {
+    if (this.reviewId == null) {
+      this.reviewId = UUID.randomUUID().toString().replace("-", "");
+    }
+  }
 
 }
