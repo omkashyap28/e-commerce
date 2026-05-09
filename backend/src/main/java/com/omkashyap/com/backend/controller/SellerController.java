@@ -62,28 +62,28 @@ public class SellerController {
     return ResponseEntity.noContent().build();
   }
 
-  @PostMapping("/{sellerId}/product")
+  @PostMapping("/{sellerId}/products")
   ResponseEntity<ProductResponseDto> createProduct(@PathVariable String sellerId, @Valid @RequestBody ProductRequestDto productRequestDto) {
     return ResponseEntity.status(HttpStatus.CREATED).body(productService.addNewProduct(sellerId, productRequestDto));
   }
 
-  @GetMapping("/{sellerId}/product")
-  ResponseEntity<ProductResponseDto> getProduct(@PathVariable String sellerId, @RequestParam String productId) {
+  @GetMapping("/{sellerId}/products/{productId}")
+  ResponseEntity<ProductResponseDto> getProduct(@PathVariable String sellerId, @PathVariable String productId) {
     return ResponseEntity.status(HttpStatus.CREATED).body(productService.getProductBySellerAndProductId(sellerId, productId));
   }
 
-  @PatchMapping("/{sellerId}/product")
-  ResponseEntity<ProductResponseDto> updatePartialProductById(@PathVariable String sellerId, @RequestParam String productId, @RequestBody Map<String, Object> values) {
+  @PatchMapping("/{sellerId}/products/{productId}")
+  ResponseEntity<ProductResponseDto> updatePartialProductById(@PathVariable String sellerId, @PathVariable String productId, @RequestBody Map<String, Object> values) {
     return ResponseEntity.status(HttpStatus.OK).body(productService.patchProductById(sellerId, productId, values));
   }
 
-  @GetMapping("/{sellerId}/all-products")
+  @GetMapping("/{sellerId}/products")
   ResponseEntity<List<ProductResponseDto>> getAllProduct(@PathVariable String sellerId) {
     return ResponseEntity.status(HttpStatus.OK).body(productService.getAllProducts(sellerId));
   }
 
-  @DeleteMapping("/{sellerId}/product")
-  ResponseEntity<Void> deleteProduct(@PathVariable String sellerId, @RequestParam String productId) {
+  @DeleteMapping("/{sellerId}/products/{productId}")
+  ResponseEntity<Void> deleteProduct(@PathVariable String sellerId, @PathVariable String productId) {
     productService.deleteProductBySellerId(sellerId, productId);
     return ResponseEntity.noContent().build();
   }
