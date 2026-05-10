@@ -3,7 +3,6 @@ package com.omkashyap.com.backend.service.impl;
 import com.omkashyap.com.backend.dto.requestDto.CartRequestDto;
 import com.omkashyap.com.backend.dto.responseDto.CartItemResponseDto;
 import com.omkashyap.com.backend.dto.responseDto.CartResponseDto;
-import com.omkashyap.com.backend.dto.responseDto.ProductAttributeResponseDto;
 import com.omkashyap.com.backend.entity.*;
 import com.omkashyap.com.backend.repository.*;
 import com.omkashyap.com.backend.service.CartService;
@@ -80,18 +79,9 @@ public class CartServiceImpl implements CartService {
           dto.setQuantity(item.getQuantity());
           dto.setProductId(item.getProduct().getProductId());
           dto.setProductUrl("/products/" + item.getProduct().getProductId());
-          List<ProductAttributeResponseDto> attributes = item.getProductAttributes().stream()
-              .map(attr -> {
-                ProductAttributeResponseDto productAttributeResponseDto = new ProductAttributeResponseDto();
-                Map<String, String> attributesMap = new HashMap<>();
-                attributesMap.put(
-                    attr.getAttributeName(),
-                    attr.getAttributeValue()
-                );
-                productAttributeResponseDto.setAttributes(attributesMap);
-
-                return productAttributeResponseDto;
-              }).toList();
+          Map<String, String> attributes = new HashMap<>();
+          item.getProductAttributes()
+              .forEach(attr -> attributes.put(attr.getAttributeName(), attr.getAttributeValue()));
           dto.setProductAttributes(attributes);
 
           return dto;
