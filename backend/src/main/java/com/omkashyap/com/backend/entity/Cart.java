@@ -1,16 +1,19 @@
 package com.omkashyap.com.backend.entity;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
+@Setter
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @Table(
     indexes = @Index(
         name = "idx_cart_userid", columnList = "user_id"
@@ -35,7 +38,14 @@ public class Cart {
   )
   private User user;
 
+  @OneToMany(
+      mappedBy = "cart",
+      cascade = CascadeType.DETACH,
+      orphanRemoval = true
+  )
+  @Builder.Default
+  private List<CartItem> cartItem = new ArrayList<>();
+
   @CreationTimestamp
   private LocalDateTime createdAt;
-
 }

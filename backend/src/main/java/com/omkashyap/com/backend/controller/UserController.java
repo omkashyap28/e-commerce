@@ -1,10 +1,9 @@
 package com.omkashyap.com.backend.controller;
 
 import com.omkashyap.com.backend.dto.requestDto.AddressRequestDto;
-import com.omkashyap.com.backend.dto.responseDto.AllAddressResponseDto;
-import com.omkashyap.com.backend.dto.responseDto.ReviewResponseDto;
-import com.omkashyap.com.backend.dto.responseDto.UserResponseDto;
-import com.omkashyap.com.backend.service.AddressService;
+import com.omkashyap.com.backend.dto.requestDto.CartRequestDto;
+import com.omkashyap.com.backend.dto.responseDto.*;
+import com.omkashyap.com.backend.service.CartService;
 import com.omkashyap.com.backend.service.ReviewService;
 import com.omkashyap.com.backend.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +22,7 @@ public class UserController {
 
   private final UserService userService;
   private final ReviewService reviewService;
+  private final CartService cartService;
 
   @GetMapping("/{userId}")
   ResponseEntity<UserResponseDto> getUserById(@PathVariable("userId") String userId) {
@@ -54,4 +54,21 @@ public class UserController {
   ResponseEntity<List<ReviewResponseDto>> getAllReviewByUserId(@PathVariable String userId) {
     return ResponseEntity.status(HttpStatus.OK).body(reviewService.getAllReviewsByUserId(userId));
   }
+
+  @PostMapping("/{userId}/cart")
+  ResponseEntity<CartResponseDto> addToCart(@PathVariable String userId, @RequestBody CartRequestDto requestDto) {
+    return ResponseEntity.status(HttpStatus.CREATED).body(cartService.addToCart(userId, requestDto));
+  }
+
+  @GetMapping("/{userId}/cart")
+  ResponseEntity<List<CartItemResponseDto>> getCartItemsFromCart(@PathVariable String userId) {
+    return ResponseEntity.status(HttpStatus.CREATED).body(cartService.getCartItemsFromCart(userId));
+  }
+
+  @DeleteMapping("/{userId}/cart/{cartItemId}")
+  ResponseEntity<Void> removeCartItemFromCartById(@PathVariable String cartItemId) {
+    cartService.removeCartItemFromCartById(cartItemId);
+    return ResponseEntity.noContent().build();
+  }
+
 }

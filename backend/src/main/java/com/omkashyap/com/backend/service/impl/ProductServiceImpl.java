@@ -49,7 +49,7 @@ public class ProductServiceImpl implements ProductService {
 
     if (productRequestDto.getProductAttributes() != null) {
 
-      if (product.getProductAttribute() == null) product.setProductAttribute(new ArrayList<>());
+      if (product.getProductAttributes() == null) product.setProductAttributes(new ArrayList<>());
 
       productRequestDto.getProductAttributes().forEach(attrDto -> {
         ProductAttribute attribute = ProductAttribute.builder()
@@ -58,7 +58,7 @@ public class ProductServiceImpl implements ProductService {
             .product(product)
             .build();
 
-        product.getProductAttribute().add(attribute);
+        product.getProductAttributes().add(attribute);
       });
 
     }

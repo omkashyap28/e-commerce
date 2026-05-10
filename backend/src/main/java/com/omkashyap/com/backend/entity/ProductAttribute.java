@@ -54,15 +54,9 @@ public class ProductAttribute {
   )
   private List<OrderItem> items = new ArrayList<>();
 
-  @OneToMany(
-      mappedBy = "productAttribute",
-      cascade = CascadeType.ALL,
-      orphanRemoval = false
+  @ManyToMany(
+      mappedBy = "productAttributes"
   )
   private List<CartItem> cart = new ArrayList<>();
 
-  public ProductAttribute(String attributeName, String attributeValue) {
-    this.attributeName = attributeName;
-    this.attributeValue = attributeValue;
-  }
 }

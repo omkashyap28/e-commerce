@@ -39,10 +39,10 @@ public class ProductDtoMapper {
       dto.setProductImages(productImageResponseDtos);
     }
 
-    if (product.getProductAttribute() != null) {
+    if (product.getProductAttributes() != null) {
 
       List<ProductAttributeResponseDto> productAttributeResponseDtos =
-          product.getProductAttribute()
+          product.getProductAttributes()
               .stream()
               .map(this::mapToProductAttributeResponseDto)
               .toList();

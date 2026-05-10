@@ -101,7 +101,8 @@ public class Product {
       cascade = CascadeType.ALL,
       orphanRemoval = true
   )
-  private List<ProductAttribute> productAttribute = new ArrayList<>();
+  @Builder.Default
+  private List<ProductAttribute> productAttributes = new ArrayList<>();
 
   @CreationTimestamp
   private LocalDateTime createdAt;
