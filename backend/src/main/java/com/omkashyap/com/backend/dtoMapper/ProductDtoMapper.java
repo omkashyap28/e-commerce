@@ -1,13 +1,10 @@
 package com.omkashyap.com.backend.dtoMapper;
 
-import com.omkashyap.com.backend.dto.responseDto.ProductAttributeResponseDto;
-import com.omkashyap.com.backend.dto.responseDto.ProductImageResponseDto;
 import com.omkashyap.com.backend.dto.responseDto.ProductResponseDto;
 import com.omkashyap.com.backend.entity.Product;
-import com.omkashyap.com.backend.entity.ProductAttribute;
-import com.omkashyap.com.backend.entity.ProductImage;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -30,52 +27,25 @@ public class ProductDtoMapper {
       dto.setCategoryId(product.getCategory().getId());
     }
 
-    if (product.getProductImages() != null) {
-      List<ProductImageResponseDto> productImageResponseDtos = product.getProductImages()
-          .stream()
-          .map(this::mapToProductImageResponseDto)
-          .toList();
-
-      dto.setProductImages(productImageResponseDtos);
+    List<String> images = new ArrayList<>();
+    if (product.getProductImages() != null && !product.getProductImages().isEmpty()) {
+      product.getProductImages()
+          .forEach(img -> images.add(img.getImageUrl()));
+      dto.setProductImages(images);
     }
 
+    Map<String, String> attributes = new HashMap<>();
     if (product.getProductAttributes() != null) {
+      product.getProductAttributes()
+          .forEach(attr -> attributes.put(
+              attr.getAttributeName(),
+              attr.getAttributeValue()
+          ));
+      dto.setProductAttributes(attributes);
 
-      List<ProductAttributeResponseDto> productAttributeResponseDtos =
-          product.getProductAttributes()
-              .stream()
-              .map(this::mapToProductAttributeResponseDto)
-              .toList();
-
-      dto.setProductAttributes(productAttributeResponseDtos);
     }
 
     return dto;
 
-  }
-
-  private ProductImageResponseDto mapToProductImageResponseDto(ProductImage image) {
-
-    ProductImageResponseDto dto = new ProductImageResponseDto();
-
-    dto.setImageUrl(image.getImageUrl());
-
-    return dto;
-  }
-
-  private ProductAttributeResponseDto mapToProductAttributeResponseDto(ProductAttribute attribute) {
-
-    ProductAttributeResponseDto dto = new ProductAttributeResponseDto();
-
-    Map<String, String> attributesMap = new HashMap<>();
-
-    attributesMap.put(
-        attribute.getAttributeName(),
-        attribute.getAttributeValue()
-    );
-
-    dto.setAttributes(attributesMap);
-
-    return dto;
   }
 }
