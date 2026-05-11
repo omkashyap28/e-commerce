@@ -47,13 +47,6 @@ public class ProductAttribute {
   )
   private String attributeValue;
 
-  @OneToMany(
-      mappedBy = "productAttribute",
-      cascade = CascadeType.ALL,
-      orphanRemoval = false
-  )
-  private List<OrderItem> items = new ArrayList<>();
-
   @ManyToMany(
       mappedBy = "productAttributes"
   )
