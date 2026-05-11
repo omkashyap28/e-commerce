@@ -1,7 +1,6 @@
 package com.omkashyap.com.backend.dtoMapper;
 
 import com.omkashyap.com.backend.dto.responseDto.WishListResponseDto;
-import com.omkashyap.com.backend.entity.WishList;
 import com.omkashyap.com.backend.entity.WishListItem;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -21,12 +20,10 @@ public class WishListDtoMapper {
         .build();
     Map<String, String> productAttr = new HashMap<>();
     wishListItem.getProductAttributes().forEach(
-        attr -> {
-          productAttr.put(
-              attr.getAttributeName(),
-              attr.getAttributeValue()
-          );
-        }
+        attr -> productAttr.put(
+            attr.getAttributeName(),
+            attr.getAttributeValue()
+        )
     );
     responseDto.setProductAttributes(productAttr);
 
