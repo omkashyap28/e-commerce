@@ -120,7 +120,7 @@ public class User implements UserDetails {
       orphanRemoval = true,
       cascade = CascadeType.ALL
   )
-  private List<WishList> wishList = new ArrayList<>();
+  private WishList wishList;
 
   @JsonIgnore
   @OneToMany(
