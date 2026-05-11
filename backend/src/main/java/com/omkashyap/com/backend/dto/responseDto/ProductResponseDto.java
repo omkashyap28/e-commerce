@@ -21,5 +21,6 @@ public class ProductResponseDto {
   private Float averageRating;
   private Long categoryId;
   private Float price;
+  private String productUrl;
 
 }

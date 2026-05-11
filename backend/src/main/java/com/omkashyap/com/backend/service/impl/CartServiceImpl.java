@@ -78,7 +78,7 @@ public class CartServiceImpl implements CartService {
           dto.setCartItemId(item.getCartItemId());
           dto.setQuantity(item.getQuantity());
           dto.setProductId(item.getProduct().getProductId());
-          dto.setProductUrl("/products/" + item.getProduct().getProductId());
+          dto.setProductUrl(item.getProduct().getProductUrl());
           Map<String, String> attributes = new HashMap<>();
           item.getProductAttributes()
               .forEach(attr -> attributes.put(attr.getAttributeName(), attr.getAttributeValue()));

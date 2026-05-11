@@ -46,6 +46,8 @@ public class ProductServiceImpl implements ProductService {
         .build();
 
     productRepository.save(product);
+    product.setProductUrl("product/" + product.getProductId());
+
 
     if (productRequestDto.getProductAttributes() != null) {
 

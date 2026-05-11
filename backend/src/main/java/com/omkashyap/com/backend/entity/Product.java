@@ -78,6 +78,8 @@ public class Product {
 
   private Float price;
 
+  private String productUrl;
+
   @ManyToOne(
       fetch = FetchType.LAZY
   )

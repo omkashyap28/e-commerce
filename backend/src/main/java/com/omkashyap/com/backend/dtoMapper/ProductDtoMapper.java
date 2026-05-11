@@ -22,6 +22,7 @@ public class ProductDtoMapper {
     dto.setTotalReviews(product.getTotalReviews());
     dto.setAverageRating(product.getAverageRating());
     dto.setPrice(product.getPrice());
+    dto.setProductUrl(product.getProductUrl());
 
     if (product.getCategory() != null) {
       dto.setCategoryId(product.getCategory().getId());
