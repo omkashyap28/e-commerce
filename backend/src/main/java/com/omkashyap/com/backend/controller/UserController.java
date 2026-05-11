@@ -2,10 +2,12 @@ package com.omkashyap.com.backend.controller;
 
 import com.omkashyap.com.backend.dto.requestDto.AddressRequestDto;
 import com.omkashyap.com.backend.dto.requestDto.CartRequestDto;
+import com.omkashyap.com.backend.dto.requestDto.WishListRequestDto;
 import com.omkashyap.com.backend.dto.responseDto.*;
 import com.omkashyap.com.backend.service.CartService;
 import com.omkashyap.com.backend.service.ReviewService;
 import com.omkashyap.com.backend.service.UserService;
+import com.omkashyap.com.backend.service.WishListService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,6 +25,7 @@ public class UserController {
   private final UserService userService;
   private final ReviewService reviewService;
   private final CartService cartService;
+  private final WishListService wishListService;
 
   @GetMapping("/{userId}")
   ResponseEntity<UserResponseDto> getUserById(@PathVariable("userId") String userId) {
@@ -71,4 +74,19 @@ public class UserController {
     return ResponseEntity.noContent().build();
   }
 
+  @PostMapping("/{userId}/wishlists")
+  ResponseEntity<WishListResponseDto> addProductToWishList(@PathVariable String userId, @RequestBody WishListRequestDto requestDto) {
+    return ResponseEntity.status(HttpStatus.ACCEPTED).body(wishListService.addProductToWishList(userId, requestDto));
+  }
+
+  @GetMapping("/{userId}/wishlists")
+  ResponseEntity<List<WishListResponseDto>> getWishListProducts(@PathVariable String userId) {
+    return ResponseEntity.status(HttpStatus.OK).body(wishListService.getWishListProducts(userId));
+  }
+
+  @DeleteMapping("/{userId}/wishlists/{wishlistId}")
+  ResponseEntity<Void> removeProductFromWishlist(@PathVariable String wishlistId) {
+    wishListService.removeProductFromWishlist(wishlistId);
+    return ResponseEntity.noContent().build();
+  }
 }

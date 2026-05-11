@@ -1,20 +1,20 @@
 package com.omkashyap.com.backend.entity;
 
 import jakarta.persistence.*;
-import jdk.jfr.Timestamp;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 @Getter
+@Setter
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @Table(
     indexes = {
         @Index(name = "idx_wish_list_userid", columnList = "user_id")
@@ -31,7 +31,11 @@ public class WishList {
       fetch = FetchType.LAZY
   )
   @JoinColumn(
-      name = "user_id"
+      name = "user_id",
+      nullable = false,
+      foreignKey = @ForeignKey(
+          name = "fk_wishlist_userid"
+      )
   )
   private User user;
 
@@ -40,14 +44,9 @@ public class WishList {
       cascade = CascadeType.ALL,
       orphanRemoval = true
   )
-  private List<WishListItem> items;
+  private List<WishListItem> items = new ArrayList<>();
 
   @CreationTimestamp
-  @Column(
-      updatable = false
-  )
   private LocalDateTime createdAt;
 
-  @UpdateTimestamp
-  private LocalDateTime updatedAt;
 }
