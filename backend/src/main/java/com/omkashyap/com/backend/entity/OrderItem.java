@@ -1,18 +1,39 @@
 package com.omkashyap.com.backend.entity;
 
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
+
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 
 @Entity
 @Getter
+@Setter
+@AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Builder
+@Table(
+    uniqueConstraints = @UniqueConstraint(
+        name = "uk_order_item_order_item_id", columnNames = "order_item_id"
+    ),
+    indexes = @Index(
+        name = "idx_order_item_order_item_id", columnList = "order_item_id"
+    )
+)
 public class OrderItem {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
+
+  @Column(
+      nullable = false,
+      length = 38
+  )
+  private String orderItemId;
 
   @ManyToOne(
       fetch = FetchType.LAZY
@@ -30,29 +51,78 @@ public class OrderItem {
       fetch = FetchType.LAZY
   )
   @JoinColumn(
-      name = "product_attribute_id",
-      nullable = false,
+      name = "product_id",
       foreignKey = @ForeignKey(
-          name = "fk_order_item_attributeid"
+          name = "fk_order_item_product_id"
       )
   )
-  private ProductAttribute productAttribute;
+  private Product product;
 
+  @OneToOne(
+      mappedBy = "orderItem",
+      cascade = CascadeType.ALL,
+      orphanRemoval = true
+  )
+  private Payment payments;
+
+  @OneToOne(
+      cascade = CascadeType.ALL,
+      mappedBy = "orderItem",
+      orphanRemoval = true
+  )
+  private Invoice invoice;
+
+  @ManyToMany(fetch = FetchType.LAZY)
+  @JoinTable(
+      name = "order_item_product_attributes",
+
+      joinColumns = @JoinColumn(
+          name = "order_item_pk",
+          referencedColumnName = "id",
+          foreignKey = @ForeignKey(
+              name = "fk_order_item_attr_order_item"
+          )
+      ),
+
+      inverseJoinColumns = @JoinColumn(
+          name = "product_attribute_pk",
+          referencedColumnName = "id",
+          foreignKey = @ForeignKey(
+              name = "fk_order_item_attr_product_attribute"
+          )
+      )
+  )
+  @Builder.Default
+  private List<ProductAttribute> productAttributes = new ArrayList<>();
+
+  @Column(
+      nullable = false
+  )
+  private Double amount;
+
+  @Column(
+      nullable = false
+  )
   private Integer quantity;
 
-  private Double price;
+  @OneToOne(
+      cascade = CascadeType.ALL,
+      mappedBy = "orderItem",
+      orphanRemoval = true
+  )
+  private OrderStatus status;
 
-  public OrderItem(ProductAttribute productAttribute, Integer quantity, Double price) {
-    this.productAttribute = productAttribute;
-    this.quantity = quantity;
-    this.price = price;
+  @CreationTimestamp
+  @Column(
+      updatable = false
+  )
+  private LocalDateTime createdAt;
+
+  @PrePersist
+  void generateId() {
+    if (this.orderItemId == null) {
+      this.orderItemId = "order_" + UUID.randomUUID().toString().replace("-", "");
+    }
   }
 
-  public void assignOrder(Orders order) {
-    this.order = order;
-  }
-
-  public void removeOrder() {
-    this.order = null;
-  }
 }
